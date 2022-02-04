@@ -1,0 +1,69 @@
+group = 'org.javaee.sample'
+version = '1.0-SNAPSHOT'
+
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.3'
+//      classpath 'com.bmuschko:gradle-docker-plugin:3.0.9'
+
+    }
+}
+
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    dockerJava {
+        resolutionStrategy {
+            force 'de.gesellix:unix-socket-factory:2016-04-06T22-21-19'
+        }
+    }
+}
+
+docker {
+  url = 'unix:///var/run/docker.sock'
+}
+
+dependencies {
+    providedCompile group: 'javax', name: 'javaee-api', version:'7.0'
+}
+
+task copyDockerArtifacts(type: Copy) {
+    dependsOn build
+    from('build/libs') {
+        include "javaee-docker-gradle-${project.version}.war"
+    }
+    from('src/main/docker') {
+        include 'Dockerfile'
+    }
+    into 'build/docker'
+    rename "javaee-docker-gradle-${project.version}.war", 'javaee-docker-gradle.war'
+}
+
+task buildImage(type: DockerBuildImage) {
+    dependsOn copyDockerArtifacts
+    inputDir = project.file('build/docker')
+//   tag = 'javaee-docker-gradle'
+}
+
+task createContainer(type: DockerCreateContainer) {
+    dependsOn buildImage
+    targetImageId { buildImage.getImageId() }
+    portBindings = ['8080:8080']
+}
+
+task startContainer(type: DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId { createContainer.getContainerId() }
+}
