@@ -2,23 +2,30 @@ Java EE Application as Docker Container using Gradle
 
 Example to show how to package a Java EE 7 application as Docker image and run it within a container using Gradle Docker Plugin.
 
-. `./gradlew build` builds the application.
+Build the application
+
+`./gradlew build` builds the application.
 
 
-== Build Docker Image
+Build the docker image
 
-. Start Docker for Mac
-
-. docker build -t javaee-docker-gradle .
+docker build -t javaee-docker-gradle .
 
 <!-- . Run `./gradlew buildImage` to create the Docker Image -->
 
-== Run Docker Container
+Run the container
 
 . Run `./gradlew startContainer` to run the Docker Container
-. Access the application `curl http://locahost:8080/javaee-docker-gradle/resources/persons`. It shows the output:
-+
-[source, xml]
-----
+
+
+Test the container 
+
+The application should be accessed at `http://locahost:8080/javaee-docker-gradle/resources/persons` 
+
+or `curl http://locahost:8080/javaee-docker-gradle/resources/persons` 
+
+
+Output should be a string
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Spiderman</name></person><person><name>Hulk</name></person><person><name>Iron Man</name></person><person><name>Dr. Strange</name></person><person><name>Hawkeye</name></person><person><name>Captain America</name></person></collection>
-----
+.```
