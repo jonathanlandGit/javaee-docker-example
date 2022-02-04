@@ -28,4 +28,4 @@ or `curl http://locahost:8080/javaee-docker-gradle/resources/persons`
 Output should be a string
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?><collection><person><name>Spiderman</name></person><person><name>Hulk</name></person><person><name>Iron Man</name></person><person><name>Dr. Strange</name></person><person><name>Hawkeye</name></person><person><name>Captain America</name></person></collection>
-.```
+```
